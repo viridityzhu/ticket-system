@@ -79,12 +79,35 @@ class DisplayTraveller extends React.Component {
   }
 }
 
+function RemainingNum(props){
+  return (
+    <div id="remainingNumDiv">
+      <label htmlFor="remainingNum">Free slots remaining:</label>
+      <label id="remainingNum"></label>
+      <label htmlFor="remainingNum"> {props.freeSlots} / 25</label>
+    </div>
+  );
+}
 class DisplayFreeSeats extends React.Component {
   render() {
+    const slots = [];
+    for (var i = this.props.freeSlots; i < 25; i++) {
+      slots.push(<li className="redSlot"></li>);
+    }
+    for (var i = 0; i < this.props.freeSlots; i++) {
+      slots.push(<li className="greySlot"></li>);
+    }
     return (
       <div>
-        <p>Free slots: {this.props.freeSlots}</p>
-        <ul id="availSlots"> </ul>
+        <h2>Free seats</h2>
+        <RemainingNum freeSlots={this.props.freeSlots}/>
+        <div id="freeSeats">
+          <ul id="availSlots">{slots} </ul>
+        </div>
+        <div className="center">
+          <p>Grey: Empty</p>
+          <p>Red: Occupied</p>
+        </div>
       </div>
     );
   }
@@ -132,12 +155,7 @@ class AddTraveller extends React.Component {
           </div>
           <button id="bookBtn">Book</button>
         </form>
-        <div id="remainingNumDiv">
-            <label htmlFor="remainingNum">Free slots:</label>
-            <label id="remainingNum"></label>
-            <label htmlFor="remainingNum"> {this.props.freeSlots} / 25</label>
-        </div>
-        <DisplayFreeSeats/>
+        <RemainingNum freeSlots={this.props.freeSlots}/> 
 
       </div>
     );
@@ -148,11 +166,11 @@ class NavBar extends React.Component {
   render() {
     return (
       <div id="navbar">
-        <button onClick={() => this.props.display("welcome")}>Display Homepage</button>
-        <button onClick={() => this.props.display("addTraveller")}>Add Traveller</button>
-        <button onClick={() => this.props.display("deleteTraveller")}>Delete Traveller</button>
-        <button onClick={() => this.props.display("displayTraveller")}>Display Traveller</button>
-        <button onClick={() => this.props.display("displayFreeSeats")}>Display Free Seats</button>
+        <button className="navBtn" onClick={() => this.props.display("welcome")}>Display Homepage</button>
+        <button className="navBtn" onClick={() => this.props.display("addTraveller")}>Add Traveller</button>
+        <button className="navBtn" onClick={() => this.props.display("deleteTraveller")}>Delete Traveller</button>
+        <button className="navBtn" onClick={() => this.props.display("displayTraveller")}>Display Traveller</button>
+        <button className="navBtn" onClick={() => this.props.display("displayFreeSeats")}>Display Free Seats</button>
         {/* <button id="clearBtn">Clear all data (for test)</button> */}
       </div>
     )
@@ -160,7 +178,12 @@ class NavBar extends React.Component {
 }
 class DisplayHomepage extends React.Component {
   render() {
-    return <p>Welcome!</p>
+    return (
+      <div>
+        <h2>Welcome!</h2>
+        <RemainingNum freeSlots={this.props.freeSlots} /> 
+      </div>
+    );
   }
 }
 class Contents extends React.Component {
@@ -175,7 +198,7 @@ class Contents extends React.Component {
     this.setState({page: pageName});
   }
   addTraveller(traveller){
-    if (this.state.travellers.length >= 26){
+    if (this.state.travellers.length >= 25){
       alert("Reservation list is already full. You cannot book anymore.");
       return false;
     }
@@ -207,7 +230,7 @@ class Contents extends React.Component {
     var page = this.state.page;
     let displayPage = null;
     if (page == "welcome") {
-      displayPage = <DisplayHomepage/>;
+      displayPage = <DisplayHomepage freeSlots={25-this.state.travellers.length}/>;
     }
     else if (page == "addTraveller") {
       displayPage = <AddTraveller addTraveller={this.addTraveller} freeSlots={25-this.state.travellers.length}/>;
@@ -220,7 +243,7 @@ class Contents extends React.Component {
       <div className="contents">
         <NavBar display={this.display}/>
         <h1>Railway Ticket Reservation System</h1>
-        {displayPage}
+        <div id="page"> {displayPage} </div>
       </div>
     )
   }

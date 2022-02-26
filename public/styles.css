@@ -3,9 +3,12 @@
     background-color: #353846;
     color: white;
 }
+html {
+    display: flex;
+    justify-content: center;
+}
 .contents {
-    padding-left: 20%;
-    padding-right: 20%;
+   
 }
 h1{
     text-align: center;
@@ -31,23 +34,39 @@ button {
     margin: 5px;
 }
 
-/* availSlots list */
-#availSlots > li:hover{
-    background-color: #7173e0;
-    cursor: pointer;
+#page {
+    padding-left: 20%;
+    padding-right: 20%;
 }
+.navBtn {
+
+}
+/* availSlots list */
 ul#availSlots { 
     list-style-type: none; 
     overflow: auto;   
-    max-width: 800px;
+    max-width: 285px;
+    padding: 0;
 } 
 #availSlots > li {
-    height: 25px;   
+    height: 45px;   
+    width: 45px;
     float: left;   
-    margin-right: 0px;   
-    border-right: 1px solid #aaa;   
-    padding: 0 20px; 
+    margin: 6px 6px;   
+    /* border-right: 1px solid #aaa;    */
+}
+.redSlot {
+    background-color: rgb(224, 123, 92);
+}
+.greySlot {
     background-color: #818286;
+}
+#freeSeats {
+    display: flex;
+    justify-content: center;
+}
+.center {
+    text-align: center;
 }
 
 /* input block */
