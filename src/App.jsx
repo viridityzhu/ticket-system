@@ -16,13 +16,22 @@ class DeleteTraveller extends React.Component {
 }
 class DisplayTravellerRow extends React.Component {
   render() {
+    const traveller = this.props.traveller;
     return (
-        <p>traveller row place holder.</p>
+      <tr>
+          <th scope="row" className="seatCol">{traveller.serialNo}</th>
+          <td>{traveller.name}</td>
+          <td>{traveller.phone}</td>
+          <td>{traveller.created}</td>
+      </tr>
     );
   }
 }
 class DisplayTraveller extends React.Component {
   render() {
+    const travellerRows = this.props.travellers.map(traveller =>
+      <DisplayTravellerRow key={traveller.serialNo} traveller={traveller} />
+    );
     return (
       <div>
         <h2>Reservation List</h2>
@@ -30,7 +39,6 @@ class DisplayTraveller extends React.Component {
         <table id="resListTbl">
             <thead>
                 <tr>
-                    <th scope="col">Seat</th>
                     <th scope="col">Serial No.</th>
                     <th scope="col">Name</th>
                     <th scope="col">Phone Number</th>
@@ -38,7 +46,7 @@ class DisplayTraveller extends React.Component {
                 </tr>
             </thead>
             <tbody>
-              <DisplayTravellerRow/>
+              {travellerRows}
             </tbody>
         </table>
       </div>
@@ -50,7 +58,10 @@ class DisplayTraveller extends React.Component {
 class DisplayFreeSeats extends React.Component {
   render() {
     return (
-      <ul id="availSlots"> </ul>
+      <div>
+        <p>Free slots: {this.props.freeSlots}</p>
+        <ul id="availSlots"> </ul>
+      </div>
     );
   }
 }
@@ -163,8 +174,8 @@ class Contents extends React.Component {
       displayPage = <AddTraveller addTraveller={this.addTraveller} freeSlots={25-this.state.travellers.length}/>;
     }
     else if (page == "deleteTraveller") {displayPage = <DeleteTraveller/>;}
-    else if (page == "displayTraveller") {displayPage = <DisplayTraveller/>;}
-    else if (page == "displayFreeSeats") {displayPage = <DisplayFreeSeats/>;}
+    else if (page == "displayTraveller") {displayPage = <DisplayTraveller travellers={this.state.travellers}/>;}
+    else if (page == "displayFreeSeats") {displayPage = <DisplayFreeSeats freeSlots={25-this.state.travellers.length}/>;}
     
     return (
       <div className="contents">
