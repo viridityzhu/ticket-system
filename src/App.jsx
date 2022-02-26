@@ -1,15 +1,39 @@
 class DeleteTraveller extends React.Component {
+  constructor() {
+    super();
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+    const form = document.forms.cancel;
+    const serialNo = form.serialNo.value;
+    if (serialNo === null || serialNo === undefined || serialNo === "") {
+        alert("Please fill in the required info.");
+    }
+    else if (!(serialNo.match('^[0-9]*$')) || !(serialNo>=1 && serialNo<=25)) {
+      alert("The serial no. is invalid. It should be a number between 1 and 25.");
+    }
+    else {
+      const serialNo = form.serialNo.value;
+      const isValid = this.props.deleteTraveller(serialNo);
+      if(isValid) {
+        form.serialNo.value = "";
+      }
+    }
+  }
   render() {
     return (
       <div>
-        <p>Click on a row to select a record, then confirm to cancel the ticket.</p>
-        <div class="inputBlk">
-            <label for="cancel">Cancel Ticket at Seat: </label>
-            <input type="text" id="cancel"/>
-        </div>
-
-        <button id="cancelBtn">Confirm to cancel</button>
-        <button id="backHomeBtn">Back to Homepage</button>
+        <h2>Cancel a ticket</h2>
+        <p>Input the serial no. to cancel your ticket. (The serial no. can be found at "Display Travellers" page.)</p>
+        <form name="cancel" onSubmit={this.handleSubmit}>
+          <div className="inputBlk">
+              <label htmlFor="serialNo">Serial No.: </label>
+              <input type="number" name="serialNo" placeholder="Serial No., from 1 to 25."/>
+          </div>
+          <button>Submit</button>
+        </form>
       </div>
     );
   }
@@ -79,7 +103,7 @@ class AddTraveller extends React.Component {
         phone === null || phone === undefined || phone === "" ) {
         alert("Please fill in all the required info.");
     }
-    else if (!(phone.match('[0-9]{8}'))) {
+    else if (!(phone.match('^[0-9]{8}$'))) {
       alert("Your phone number is invalid. Only support SG number for test, like 12345678.");
     }
     else {
@@ -99,7 +123,7 @@ class AddTraveller extends React.Component {
         <form name="book" onSubmit={this.handleSubmit}>
           <p>Please input your name and phone number:</p>
           <div className="inputBlk">
-              <label htmlFor="nameField">Name: </label>
+              <label htmlFor="name">Name: </label>
               <input type="text" name="name" placeholder="Your Name"/>
           </div>
           <div className="inputBlk">
@@ -142,9 +166,10 @@ class DisplayHomepage extends React.Component {
 class Contents extends React.Component {
   constructor() {
     super();
-    this.state = { page: "welcome", travellers: []};
+    this.state = { page: "welcome", travellers: [], serial: 1};
     this.display = this.display.bind(this);
     this.addTraveller= this.addTraveller.bind(this);
+    this.deleteTraveller= this.deleteTraveller.bind(this);
   }
   display(pageName){
     this.setState({page: pageName});
@@ -155,11 +180,25 @@ class Contents extends React.Component {
       return false;
     }
     else {
-      traveller.serialNo = this.state.travellers.length + 1;
+      traveller.serialNo = this.state.serial;
+      this.setState({serial: this.state.serial + 1});
       traveller.created = Date.now();
       const newTravellers = this.state.travellers.slice();
       newTravellers.push(traveller);
       this.setState({travellers: newTravellers});
+      alert("Successfully booked a new ticket.");
+      return true;
+    }
+  }
+  deleteTraveller(serialNo) {
+    if (!this.state.travellers.find(element => element.serialNo == serialNo)) {
+      alert("This record doesn't exist.");
+      return false;
+    }
+    else {
+      const newTravellers = this.state.travellers.filter(element => element.serialNo != serialNo);
+      this.setState({travellers: newTravellers});
+      alert("Ticket cancelled.");
       return true;
     }
   }
@@ -173,7 +212,7 @@ class Contents extends React.Component {
     else if (page == "addTraveller") {
       displayPage = <AddTraveller addTraveller={this.addTraveller} freeSlots={25-this.state.travellers.length}/>;
     }
-    else if (page == "deleteTraveller") {displayPage = <DeleteTraveller/>;}
+    else if (page == "deleteTraveller") {displayPage = <DeleteTraveller deleteTraveller={this.deleteTraveller}/>;}
     else if (page == "displayTraveller") {displayPage = <DisplayTraveller travellers={this.state.travellers}/>;}
     else if (page == "displayFreeSeats") {displayPage = <DisplayFreeSeats freeSlots={25-this.state.travellers.length}/>;}
     
