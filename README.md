@@ -1,12 +1,14 @@
 # ticket-system
 NUS IT5007 Tutorial Practice
 
+Link to my GitHub repo: [https://github.com/viridityzhu/ticket-system](https://github.com/viridityzhu/ticket-system)
+
 ## Commands
 
 ### Git clone this repo
 
 ```sh
-git clone
+git clone git@github.com:viridityzhu/ticket-system.git
 ```
 
 ### Install
