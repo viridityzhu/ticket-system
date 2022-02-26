@@ -55,32 +55,55 @@ class DisplayFreeSeats extends React.Component {
   }
 }
 class AddTraveller extends React.Component {
+  constructor() {
+    super();
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleSubmit(e) {
+    e.preventDefault();
+    const form = document.forms.book;
+    const name = form.name.value; const phone = form.phone.value;
+    if (name === null || name === undefined || name === "" ||
+        phone === null || phone === undefined || phone === "" ) {
+        alert("Please fill in all the required info.");
+    }
+    else if (!(phone.match('[0-9]{8}'))) {
+      alert("Your phone number is invalid. Only support SG number for test, like 12345678.");
+    }
+    else {
+      const traveller = {
+        name: form.name.value, phone: form.phone.value
+      };
+      const isValid = this.props.addTraveller(traveller);
+      if(isValid) {
+        form.name.value = ""; form.phone.value = "";
+      }
+    }
+  }
   render() {
     return (
       <div>
-        <h2>Book Your Ticket</h2>
-        <p>Please input your name and phone number:</p>
-        <div className="inputBlk">
-            <label htmlFor="nameField">Name: </label>
-            <input type="text" id="nameField" placeholder="Your Name"/>
-        </div>
-        <div className="inputBlk">
-            <label htmlFor="phone">Phone Number: </label>
-            <input type="text" id="phone" placeholder="Your Phone No."/>
-        </div>
-        <p>Click on and select a seat from free slots available:</p>
+        <h2>Add a traveller</h2>
+        <form name="book" onSubmit={this.handleSubmit}>
+          <p>Please input your name and phone number:</p>
+          <div className="inputBlk">
+              <label htmlFor="nameField">Name: </label>
+              <input type="text" name="name" placeholder="Your Name"/>
+          </div>
+          <div className="inputBlk">
+              <label htmlFor="phone">Phone Number: </label>
+              <input type="number" name="phone" placeholder="Only support SG number, like: 12345678"/>
+          </div>
+          <button id="bookBtn">Book</button>
+        </form>
         <div id="remainingNumDiv">
             <label htmlFor="remainingNum">Free slots:</label>
             <label id="remainingNum"></label>
-            <label htmlFor="remainingNum"> / 25</label>
+            <label htmlFor="remainingNum"> {this.props.freeSlots} / 25</label>
         </div>
         <DisplayFreeSeats/>
 
-        <div className="inputBlk">
-            <label htmlFor="seat" placeholder="Seat No.">Seat: </label>
-            <input type="text" id="seat"/>
-        </div>
-        <button id="bookBtn">Book</button>
       </div>
     );
   }
@@ -108,11 +131,26 @@ class DisplayHomepage extends React.Component {
 class Contents extends React.Component {
   constructor() {
     super();
-    this.state = { page: "welcome" };
+    this.state = { page: "welcome", travellers: []};
     this.display = this.display.bind(this);
+    this.addTraveller= this.addTraveller.bind(this);
   }
   display(pageName){
     this.setState({page: pageName});
+  }
+  addTraveller(traveller){
+    if (this.state.travellers.length >= 26){
+      alert("Reservation list is already full. You cannot book anymore.");
+      return false;
+    }
+    else {
+      traveller.serialNo = this.state.travellers.length + 1;
+      traveller.created = Date.now();
+      const newTravellers = this.state.travellers.slice();
+      newTravellers.push(traveller);
+      this.setState({travellers: newTravellers});
+      return true;
+    }
   }
 
   render() {
@@ -122,7 +160,7 @@ class Contents extends React.Component {
       displayPage = <DisplayHomepage/>;
     }
     else if (page == "addTraveller") {
-      displayPage = <AddTraveller/>;
+      displayPage = <AddTraveller addTraveller={this.addTraveller} freeSlots={25-this.state.travellers.length}/>;
     }
     else if (page == "deleteTraveller") {displayPage = <DeleteTraveller/>;}
     else if (page == "displayTraveller") {displayPage = <DisplayTraveller/>;}
