@@ -7,9 +7,7 @@ html {
     display: flex;
     justify-content: center;
 }
-.contents {
-   
-}
+
 h1{
     text-align: center;
     color: #8ce360;
@@ -38,7 +36,13 @@ button {
     padding-left: 20%;
     padding-right: 20%;
 }
+#navbar {
+    background: #7a88a3; 
+}
 .navBtn {
+    border-radius: 0;
+    border-right-color:#ffffff;
+    border-right-width: 1px;
 
 }
 /* availSlots list */
