@@ -1,0 +1,92 @@
+/* Basic styles */
+* {
+    background-color: #353846;
+    color: white;
+}
+.contents {
+    padding-left: 20%;
+    padding-right: 20%;
+}
+h1{
+    text-align: center;
+    color: #8ce360;
+}
+h2{
+    color: #8ce360;
+}
+label {
+    font-weight: bolder;
+    font-size: 110%;
+}
+button {
+    width: 200px;
+    height: 40px;
+    border-width: 0px;
+    border-radius: 3px;
+    background: #7a88a3;
+    cursor: pointer;
+    outline: none; 
+    color: white;
+    font-size: 15px; 
+    margin: 5px;
+}
+
+/* availSlots list */
+#availSlots > li:hover{
+    background-color: #7173e0;
+    cursor: pointer;
+}
+ul#availSlots { 
+    list-style-type: none; 
+    overflow: auto;   
+    max-width: 800px;
+} 
+#availSlots > li {
+    height: 25px;   
+    float: left;   
+    margin-right: 0px;   
+    border-right: 1px solid #aaa;   
+    padding: 0 20px; 
+    background-color: #818286;
+}
+
+/* input block */
+.inputBlk {
+    padding: 3px 0 20px;
+}
+.inputBlk > input {
+    border: 1px solid #7173e0; 
+    border-radius: 3px;
+    color: #7173e0;
+    padding: 10px 10px;
+}
+
+#remainingNum {
+    font-size: 150%;
+    color: #9d56ae;
+}
+div #remainingNumDiv {
+    text-align: center;
+}
+
+
+/* Reservation list table */
+table {
+    padding: 10px;
+}
+thead th {
+    background-color: #7a88a3;
+    border-bottom-width: 0;
+}
+tr, th {
+    border-width: 1px;
+    border-style: solid;
+    border-color: #7a88a3;
+}
+td, th {
+    padding: 5px 10px;
+}
+tr:hover td, tr:hover th{
+    background-color: #7173e0;
+    cursor: pointer;
+}
