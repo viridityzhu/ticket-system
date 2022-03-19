@@ -1,6 +1,8 @@
 # ticket-system
 NUS IT5007 Tutorial Practice
 
+** For Tutorial 4: switch to branch `tut4` **
+
 Link to my GitHub repo: [https://github.com/viridityzhu/ticket-system](https://github.com/viridityzhu/ticket-system)
 
 ## Commands

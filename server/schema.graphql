@@ -1,16 +1,14 @@
 
 type Traveler {
   serialNo: Int!
-  Name: String
+  name: String
   phone: Int
   created: String
 }
 
 input TravelerInput {
-  serialNo: Int
-  Name: String
+  name: String
   phone: Int
-  created: String
 }
 
 ##### Top level declarations
@@ -21,6 +19,6 @@ type Query {
 }
 
 type Mutation {
-  addTraveler(traveler: TravelerInput!): String
+  addTraveler(Traveler: TravelerInput!): String
   deleteTraveler(serialNo: Int!): String
 }

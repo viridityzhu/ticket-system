@@ -1,3 +1,4 @@
+
 async function graphQLFetch(query, variables = {}) {
   try {
     const response = await fetch('/graphql', {
@@ -6,7 +7,7 @@ async function graphQLFetch(query, variables = {}) {
       body: JSON.stringify({ query, variables })
     });
     const body = await response.text();
-    const result = JSON.parse(body, jsonDateReviver);
+    const result = JSON.parse(body);
 
     if (result.errors) {
       const error = result.errors[0];
@@ -228,20 +229,19 @@ class Contents extends React.Component {
   async loadData() {
     const query = `query {
       readTraveler {
-        serialNo Name phone created
+        serialNo name phone created
       }
     }`;
 
     const data = await graphQLFetch(query);
     if (data) {
-      this.setState({ travellers: data.travellers });
+      this.setState({ travellers: data.readTraveler});
+      // console.log("loaddata", data, this.state.travellers);
     }
   }
   async addTraveller(traveller){
-    const query = `mutation addTraveler($Traveler: TravelerInputs!) {
-      addTraveler(Traveler: $Traveler) {
-        serialNo
-      }
+    const query = `mutation addTraveler($traveller: TravelerInput!) {
+      addTraveler(Traveler: $traveller)
     }`;
 
     const data = await graphQLFetch(query, { traveller });
@@ -252,12 +252,10 @@ class Contents extends React.Component {
   }
   async deleteTraveller(serialNo) {
     const query = `mutation deleteTraveler($serialNo: Int!) {
-      deleteTraveler(serialNo: $serialNo) {
-        serialNo
-      }
+      deleteTraveler(serialNo: $serialNo)
     }`;
 
-    const data = await graphQLFetch(query, { traveller });
+    const data = await graphQLFetch(query, { serialNo });
     if (data) {
       alert(data);
       this.loadData();

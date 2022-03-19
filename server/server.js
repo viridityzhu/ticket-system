@@ -41,7 +41,7 @@ async function addTraveler(_, { traveler }) {
   }
   else {
     traveler.serialNo = await getNextSequence('traveler');
-    traveler.created = Date.now();
+    traveler.created = Date.now().toString();
     const result = await db.collection('traveler').insertOne(traveler);
     const savedTraveler = await db.collection('traveler')
       .findOne({ _id: result.insertedId });
