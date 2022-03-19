@@ -30,6 +30,12 @@ npm install --save-dev @babel/core@7 @babel/cli@7
 npm install --save-dev @babel/preset-react@7
 ```
 
+### Initialize
+
+```sh
+mongo traveler scripts/init.mongo.js
+```
+
 ### Compile
 
 ```sh

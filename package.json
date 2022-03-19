@@ -16,7 +16,10 @@
   "author": "Zhu Jiayin",
   "license": "ISC",
   "dependencies": {
+    "apollo-server-express": "^2.3.1",
     "express": "^4.16.4",
+    "graphql": "^0.13.2",
+    "mongodb": "^3.1.10",
     "nodemon": "^1.18.9"
   },
   "devDependencies": {
