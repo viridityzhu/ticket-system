@@ -33,7 +33,8 @@ npm install --save-dev @babel/preset-react@7
 ### Initialize
 
 ```sh
-mongo traveler scripts/init.mongo.js
+node scripts/trymongo.js
+mongo ticketsys scripts/init.mongo.js
 ```
 
 ### Compile
