@@ -1,0 +1,26 @@
+
+type Traveler {
+  serialNo: Int!
+  Name: String
+  phone: Int
+  created: String
+}
+
+input TravelerInput {
+  serialNo: Int
+  Name: String
+  phone: Int
+  created: String
+}
+
+##### Top level declarations
+
+type Query {
+  about: String!
+  readTraveler: [Traveler!]!
+}
+
+type Mutation {
+  addTraveler(traveler: TravelerInput!): String
+  deleteTraveler(serialNo: Int!): String
+}

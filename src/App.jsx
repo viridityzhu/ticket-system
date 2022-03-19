@@ -1,3 +1,28 @@
+async function graphQLFetch(query, variables = {}) {
+  try {
+    const response = await fetch('/graphql', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json'},
+      body: JSON.stringify({ query, variables })
+    });
+    const body = await response.text();
+    const result = JSON.parse(body, jsonDateReviver);
+
+    if (result.errors) {
+      const error = result.errors[0];
+      if (error.extensions.code == 'BAD_USER_INPUT') {
+        const details = error.extensions.exception.errors.join('\n ');
+        alert(`${error.message}:\n ${details}`);
+      } else {
+        alert(`${error.extensions.code}: ${error.message}`);
+      }
+    }
+    return result.data;
+  } catch (e) {
+    alert(`Error in sending data to server: ${e.message}`);
+  }
+}
+
 class DeleteTraveller extends React.Component {
   constructor() {
     super();
@@ -194,35 +219,48 @@ class Contents extends React.Component {
     this.addTraveller= this.addTraveller.bind(this);
     this.deleteTraveller= this.deleteTraveller.bind(this);
   }
+  componentDidMount() {
+    this.loadData();
+  }
   display(pageName){
     this.setState({page: pageName});
   }
-  addTraveller(traveller){
-    if (this.state.travellers.length >= 25){
-      alert("Reservation list is already full. You cannot book anymore.");
-      return false;
-    }
-    else {
-      traveller.serialNo = this.state.serial;
-      this.setState({serial: this.state.serial + 1});
-      traveller.created = Date.now();
-      const newTravellers = this.state.travellers.slice();
-      newTravellers.push(traveller);
-      this.setState({travellers: newTravellers});
-      alert("Successfully booked a new ticket.");
-      return true;
+  async loadData() {
+    const query = `query {
+      readTraveler {
+        serialNo Name phone created
+      }
+    }`;
+
+    const data = await graphQLFetch(query);
+    if (data) {
+      this.setState({ travellers: data.travellers });
     }
   }
-  deleteTraveller(serialNo) {
-    if (!this.state.travellers.find(element => element.serialNo == serialNo)) {
-      alert("This record doesn't exist.");
-      return false;
+  async addTraveller(traveller){
+    const query = `mutation addTraveler($Traveler: TravelerInputs!) {
+      addTraveler(Traveler: $Traveler) {
+        serialNo
+      }
+    }`;
+
+    const data = await graphQLFetch(query, { traveller });
+    if (data) {
+      alert(data);
+      this.loadData();
     }
-    else {
-      const newTravellers = this.state.travellers.filter(element => element.serialNo != serialNo);
-      this.setState({travellers: newTravellers});
-      alert("Ticket cancelled.");
-      return true;
+  }
+  async deleteTraveller(serialNo) {
+    const query = `mutation deleteTraveler($serialNo: Int!) {
+      deleteTraveler(serialNo: $serialNo) {
+        serialNo
+      }
+    }`;
+
+    const data = await graphQLFetch(query, { traveller });
+    if (data) {
+      alert(data);
+      this.loadData();
     }
   }
 

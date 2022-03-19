@@ -10,6 +10,7 @@ Link to my GitHub repo: [https://github.com/viridityzhu/ticket-system](https://g
 ```sh
 git clone git@github.com:viridityzhu/ticket-system.git
 cd ticket-system
+git checkout tut4
 ```
 
 ### Install
@@ -46,6 +47,8 @@ npm run compile
 ### Start
 
 ```sh
+screen mongod
+<C-a> d
 npm start
 ```
 
