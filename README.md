@@ -1,7 +1,7 @@
 # ticket-system
 NUS IT5007 Tutorial Practice
 
-** For Tutorial 4: switch to branch `tut4` **
+**For Tutorial 4: switch to branch `tut4`**
 
 Link to my GitHub repo: [https://github.com/viridityzhu/ticket-system](https://github.com/viridityzhu/ticket-system)
 
@@ -33,13 +33,22 @@ npm install --save-dev @babel/core@7 @babel/cli@7
 npm install --save-dev @babel/preset-react@7
 ```
 
-### Initialize
+### Initialize && Test
 
+Start Mongo server:
+```sh
+screen mongod
+<C-a> d
+```
+Test all CRUD operations:
 ```sh
 node scripts/trymongo.js
-mongo ticketsys scripts/init.mongo.js
 ```
 
+Initialize Mongo db:
+```sh
+mongo ticketsys scripts/init.mongo.js
+```
 ### Compile
 
 ```sh
@@ -49,8 +58,6 @@ npm run compile
 ### Start
 
 ```sh
-screen mongod
-<C-a> d
 npm start
 ```
 
