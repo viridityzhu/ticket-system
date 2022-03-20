@@ -6,6 +6,10 @@ type Traveler {
   created: String
 }
 
+type Message {
+  valid: Int!
+  msg: String
+}
 input TravelerInput {
   name: String
   phone: Int
@@ -19,6 +23,6 @@ type Query {
 }
 
 type Mutation {
-  addTraveler(Traveler: TravelerInput!): String
-  deleteTraveler(serialNo: Int!): String
+  addTraveler(Traveler: TravelerInput!): Message
+  deleteTraveler(serialNo: Int!): Message
 }

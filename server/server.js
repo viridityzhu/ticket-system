@@ -35,27 +35,27 @@ async function getNextSequence(name) {
   return result.value.current;
 };
 
-async function addTraveler(_, { traveler }) {
-  if (db.traveler.count() >= 25){
-    return "Reservation list is already full. You cannot book anymore.";
+async function addTraveler(_, { Traveler }) {
+  if (db.collection('traveler').find({}).count() >= 25){
+    return {valid: 0, msg: "Reservation list is already full. You cannot book anymore."};
   }
   else {
-    traveler.serialNo = await getNextSequence('traveler');
-    traveler.created = Date.now().toString();
-    const result = await db.collection('traveler').insertOne(traveler);
+    Traveler.serialNo = await getNextSequence('traveler');
+    Traveler.created = Date.now().toString();
+    const result = await db.collection('traveler').insertOne(Traveler);
     const savedTraveler = await db.collection('traveler')
       .findOne({ _id: result.insertedId });
-    return "Successfully booked a new ticket.";
+    return {valid: 1, msg: "Successfully booked a new ticket."};
   }
 };
 
 async function deleteTraveler(_, { serialNo }) {
-  if (!db.collection('traveler').find({serialNo:serialNo}).count() == 0) {
-    return "This record doesn't exist.";
+  if (db.collection('traveler').find({serialNo:serialNo}).count() == 0) {
+    return {valid: 0, msg:"This record doesn't exist."};
   }
   else {
     db.collection('traveler').deleteOne({ serialNo: serialNo }); 
-    return "Ticket cancelled.";
+    return {valid: 1, msg:"Ticket cancelled."};
   }
 
 };

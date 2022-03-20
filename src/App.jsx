@@ -41,7 +41,7 @@ class DeleteTraveller extends React.Component {
       alert("The serial no. is invalid. It should be a number between 1 and 25.");
     }
     else {
-      const serialNo = form.serialNo.value;
+      const serialNo = parseInt(form.serialNo.value);
       const isValid = this.props.deleteTraveller(serialNo);
       if(isValid) {
         form.serialNo.value = "";
@@ -157,7 +157,7 @@ class AddTraveller extends React.Component {
     }
     else {
       const traveller = {
-        name: form.name.value, phone: form.phone.value
+        name: form.name.value, phone: parseInt(form.phone.value)
       };
       const isValid = this.props.addTraveller(traveller);
       if(isValid) {
@@ -239,25 +239,30 @@ class Contents extends React.Component {
       // console.log("loaddata", data, this.state.travellers);
     }
   }
-  async addTraveller(traveller){
-    const query = `mutation addTraveler($traveller: TravelerInput!) {
-      addTraveler(Traveler: $traveller)
+  async addTraveller(Traveler){
+    const query = `mutation addTraveler($Traveler: TravelerInput!) {
+      addTraveler(Traveler: $Traveler) {
+        msg
+      }
     }`;
 
-    const data = await graphQLFetch(query, { traveller });
+    const data = await graphQLFetch(query, { Traveler });
     if (data) {
-      alert(data);
+      alert(data.addTraveler.msg);
+      (data, Traveler);
       this.loadData();
     }
   }
   async deleteTraveller(serialNo) {
     const query = `mutation deleteTraveler($serialNo: Int!) {
-      deleteTraveler(serialNo: $serialNo)
+      deleteTraveler(serialNo: $serialNo) {
+        msg
+      }
     }`;
 
     const data = await graphQLFetch(query, { serialNo });
     if (data) {
-      alert(data);
+      alert(data.deleteTraveler.msg);
       this.loadData();
     }
   }
