@@ -1,4 +1,5 @@
 db.traveler.remove({});
+db.blacklist.remove({});
 
 const travelerDB = [
   {
@@ -20,3 +21,5 @@ db.counters.insert({ _id: 'traveler', current: count });
 
 db.traveler.createIndex({ id: 1 }, { unique: true });
 db.traveler.createIndex({ created: 1 });
+db.blacklist.createIndex({ name: 1 });
+db.blacklist.createIndex({ phone: 1 });

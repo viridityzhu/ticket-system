@@ -187,7 +187,67 @@ class AddTraveller extends React.Component {
     );
   }
 }
+class AddBlacklist extends React.Component {
+  constructor() {
+    super();
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
 
+  handleSubmit(e) {
+    e.preventDefault();
+    const form = document.forms.book;
+    const name = form.name.value; const phone = form.phone.value;
+    if ((name === null || name === undefined || name === "") &&
+        (phone === null || phone === undefined || phone === "" )) {
+        alert("Please fill in at least one info.");
+    }
+    else if (!(phone === null || phone === undefined || phone === "" ) && !(phone.match('^[0-9]{8}$'))) {
+      alert("Your phone number is invalid. Only support SG number for test, like 12345678.");
+    }
+    else {
+      if(name === null || name === undefined || name === "") {
+        var traveller = {
+          phone: parseInt(form.phone.value)
+        };
+      }
+      else if(phone === null || phone === undefined || phone === "" ) {
+        var traveller = {
+          name: form.name.value
+        }; 
+      }
+      else {
+        var traveller = {
+          name: form.name.value, phone: parseInt(form.phone.value)
+        };
+      }
+      
+      const isValid = this.props.addBlacklist(traveller);
+      if(isValid) {
+        form.name.value = ""; form.phone.value = "";
+      }
+    }
+  }
+  render() {
+    return (
+      <div>
+        <h2>Add a traveller to blacklist</h2>
+        <form name="book" onSubmit={this.handleSubmit}>
+          <p>Please input the name or the phone number:</p>
+          <div className="inputBlk">
+              <label htmlFor="name">Name: </label>
+              <input type="text" name="name" placeholder="Your Name"/>
+          </div>
+          <div className="inputBlk">
+              <label htmlFor="phone">Phone Number: </label>
+              <input type="number" name="phone" placeholder="Only support SG number, like: 12345678"/>
+          </div>
+          <button id="bookBtn">Add</button>
+        </form>
+
+      </div>
+    );
+  }
+}
 class NavBar extends React.Component {
   render() {
     return (
@@ -197,6 +257,7 @@ class NavBar extends React.Component {
         <button className="navBtn" onClick={() => this.props.display("deleteTraveller")}>Delete Traveller</button>
         <button className="navBtn" onClick={() => this.props.display("displayTraveller")}>Display Traveller</button>
         <button className="navBtn" onClick={() => this.props.display("displayFreeSeats")}>Display Free Seats</button>
+        <button className="navBtn" onClick={() => this.props.display("blacklist")}>Add Blacklist</button>
         {/* <button id="clearBtn">Clear all data (for test)</button> */}
       </div>
     )
@@ -249,7 +310,6 @@ class Contents extends React.Component {
     const data = await graphQLFetch(query, { Traveler });
     if (data) {
       alert(data.addTraveler.msg);
-      (data, Traveler);
       this.loadData();
     }
   }
@@ -266,7 +326,19 @@ class Contents extends React.Component {
       this.loadData();
     }
   }
+  async addBlacklist(Traveler){
+    const query = `mutation addBlacklist($Traveler: TravelerInput!) {
+      addBlacklist(Traveler: $Traveler) {
+        msg
+      }
+    }`;
 
+    const data = await graphQLFetch(query, { Traveler });
+    if (data) {
+      console.log(data);
+      alert(data.addBlacklist.msg);
+    }
+  }
   render() {
     var page = this.state.page;
     let displayPage = null;
@@ -279,6 +351,7 @@ class Contents extends React.Component {
     else if (page == "deleteTraveller") {displayPage = <DeleteTraveller deleteTraveller={this.deleteTraveller}/>;}
     else if (page == "displayTraveller") {displayPage = <DisplayTraveller travellers={this.state.travellers}/>;}
     else if (page == "displayFreeSeats") {displayPage = <DisplayFreeSeats freeSlots={25-this.state.travellers.length}/>;}
+    else if (page == "blacklist") {displayPage = <AddBlacklist addBlacklist={this.addBlacklist}/>;}
     
     return (
       <div className="contents">

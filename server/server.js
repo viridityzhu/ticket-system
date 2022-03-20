@@ -18,6 +18,7 @@ const resolvers = {
   Mutation: {
     addTraveler,
     deleteTraveler,
+    addBlacklist,
   },
 };
 
@@ -36,25 +37,43 @@ async function getNextSequence(name) {
 };
 
 async function addTraveler(_, { Traveler }) {
-  if (db.collection('traveler').find({}).count() >= 25){
+  if (await db.collection('traveler').find({}).count() >= 25){
     return {valid: 0, msg: "Reservation list is already full. You cannot book anymore."};
+  }
+  else if (await db.collection('blacklist').find({name:Traveler.name}).count() + await db.collection('blacklist').find({phone:Traveler.phone}).count() > 0) {
+    return {valid: 0, msg: "This name or phone is in the blacklist. You can't book a ticket."};
   }
   else {
     Traveler.serialNo = await getNextSequence('traveler');
     Traveler.created = Date.now().toString();
-    const result = await db.collection('traveler').insertOne(Traveler);
-    const savedTraveler = await db.collection('traveler')
-      .findOne({ _id: result.insertedId });
+    await db.collection('traveler').insertOne(Traveler);
     return {valid: 1, msg: "Successfully booked a new ticket."};
   }
 };
+async function addBlacklist(_, { Traveler }) {
+  name = Traveler.name; phone = Traveler.phone;
+  if (!(name === null || name === undefined || name === "") ) {
+    const hit = await db.collection('blacklist').find({name:name}).count();
+    if (hit>0) {
+      return {valid: 0, msg:"This traveler has already been blocked."};
+    }
+  }
+  else if (!(phone === null || phone === undefined || phone === "" )) {
+    const hit = await db.collection('blacklist').find({phone:phone}).count();
+    if (hit>0) {
+      return {valid: 0, msg:"This phone has already been blocked."};
+    }
+  }
+  await db.collection('blacklist').insertOne(Traveler);
+  return {valid: 1, msg: "Successfully added into the blacklist."};
+};
 
 async function deleteTraveler(_, { serialNo }) {
-  if (db.collection('traveler').find({serialNo:serialNo}).count() == 0) {
+  if (await db.collection('traveler').find({serialNo:serialNo}).count() == 0) {
     return {valid: 0, msg:"This record doesn't exist."};
   }
   else {
-    db.collection('traveler').deleteOne({ serialNo: serialNo }); 
+    await db.collection('traveler').deleteOne({ serialNo: serialNo }); 
     return {valid: 1, msg:"Ticket cancelled."};
   }
 
